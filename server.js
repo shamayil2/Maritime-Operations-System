@@ -14,7 +14,7 @@ const app = express()
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://maritime-operations-system-frontend-eta.vercel.app/', // Example: Add another local port here// Example: Add your production frontend URL here
+    'https://maritime-operations-system-frontend-eta.vercel.app', // Removed the trailing slash
   ],
   credentials: true,
 }))
