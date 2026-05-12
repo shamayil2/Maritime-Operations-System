@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  admin
+  crew
+}
+
+enum TaskStatus {
+  pending
+  in_progress
+  completed
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(crew)
+  createdAt    DateTime @default(now())
+
+  createdTasks  Task[]          @relation("TaskCreator")
+  createdDrills Drill[]         @relation("DrillCreator")
+  taskActivity  TaskActivity[]
+  drillActivity DrillActivity[]
+}
+
+model Ship {
+  id        String   @id @default(uuid())
+  name      String
+  imoNumber String   @unique
+  createdAt DateTime @default(now())
+
+  tasks  Task[]
+  drills Drill[]
+}
+
+model Task {
+  id        String   @id @default(uuid())
+  title     String
+  dueDate   DateTime
+  description String?
+  createdAt DateTime @default(now())
+
+  ship      Ship   @relation(fields: [shipId], references: [id])
+  shipId    String
+  createdBy User   @relation("TaskCreator", fields: [createdById], references: [id])
+  createdById String
+
+  taskActivity TaskActivity[]
+}
+
+model Drill {
+  id            String   @id @default(uuid())
+  title         String
+  drillType     String
+  scheduledDate DateTime
+  createdAt     DateTime @default(now())
+
+  ship      Ship   @relation(fields: [shipId], references: [id])
+  shipId    String
+  createdBy User   @relation("DrillCreator", fields: [createdById], references: [id])
+  createdById String
+
+  drillActivity DrillActivity[]
+}
+
+model TaskActivity {
+  id        String     @id @default(uuid())
+  status    TaskStatus @default(pending)
+  comments  String?
+  updatedAt DateTime   @updatedAt
+
+  task   Task   @relation(fields: [taskId], references: [id])
+  taskId String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@unique([taskId, userId])
+}
+
+model DrillActivity {
+  id        String   @id @default(uuid())
+  attended  Boolean  @default(false)
+  completed Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+
+  drill   Drill  @relation(fields: [drillId], references: [id])
+  drillId String
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+
+  @@unique([drillId, userId])
+}
