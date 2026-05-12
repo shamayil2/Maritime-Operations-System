@@ -5,6 +5,7 @@ import authRoutes from './src/routes/auth.routes.js'
 import taskRoutes from './src/routes/task.routes.js'
 import shipRoutes from './src/routes/ship.routes.js'
 import drillRoutes from './src/routes/drill.routes.js'
+import userRoutes from './src/routes/user.routes.js'
 import complianceRoutes from './src/routes/compliance.routes.js'
 import errorHandler from './src/middlewares/error.middleware.js'
 
@@ -30,6 +31,8 @@ app.use('/api/tasks', taskRoutes)
 app.use('/api/ships', shipRoutes)
 app.use('/api/drills', drillRoutes)
 app.use('/api/compliance', complianceRoutes)
+app.use('/api/users', userRoutes)
+
 
 
 // ── 404 handler ───────────────────────────────────────────
